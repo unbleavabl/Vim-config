@@ -46,16 +46,33 @@ Plugin 'mhinz/vim-signify'
 Plugin 'int3/vim-extradite'
 Plugin 'craigemery/vim-autotag'
 Plugin 'vim-scripts/SyntaxRange'
+Plugin 'janko-m/vim-test'
+Plugin 'tpope/vim-dispatch'
+Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'terryma/vim-smooth-scroll'
+Plugin 'mkitt/tabline.vim'
+Plugin 'simeji/winresizer'
+Plugin 'othree/eregex.vim'
+Plugin 'dkprice/vim-easygrep'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'terryma/vim-expand-region'
+Plugin 'maxbrunsfeld/vim-yankstack'
+
 " css
 Plugin 'ap/vim-css-color'
 Plugin 'hail2u/vim-css3-syntax'
 
 " js
 Plugin 'pangloss/vim-javascript'
+Plugin 'jelera/vim-javascript-syntax'
 Plugin 'elzr/vim-json'
 Plugin 'mxw/vim-jsx'
 Plugin 'millermedeiros/vim-esformatter'
-" Bundle 'marijnh/tern_for_vim'
+Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'moll/vim-node'
+Plugin 'mattn/emmet-vim'
+Plugin 'isRuslan/vim-es6'
+
 " snipmate
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
@@ -63,10 +80,14 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 
 Plugin 'millermedeiros/vim-statline'
-" Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'vim-airline/vim-airline'
 
 " colorschemes
-Plugin 'flazz/vim-colorschemes'
+Plugin 'JonathanReeve/vim-colorschemes'
+Plugin 'felixhummel/setcolors.vim'
+Plugin 'joshdick/onedark.vim'
+
 " required for vundle
 call vundle#end()
 
@@ -77,6 +98,7 @@ filetype plugin indent on   " enable detection, plugins and indent
 " Local dirs (centralize everything)
 set backupdir=~/.vim/backups
 set directory=~/.vim/swaps
+set autochdir
 
 
 " Change mapleader (easier to type), at the top since its used everywhere
@@ -123,6 +145,8 @@ set nostartofline               " Make j/k respect the columns
 set timeoutlen=500              " how long it wait for mapped commands
 set ttimeoutlen=100             " faster timeout for escape key and others
 
+" --- tags ---
+set tags=./tags;,tags;
 
 " Use a bar-shaped cursor for insert mode, even through tmux.
 if exists('$TMUX')
@@ -140,10 +164,10 @@ endif
 " UI
 " -----------------------------------------------------------------------------
 
-set t_Co=256                " 256 colors terminal
+set termguicolors                " 256 colors terminal
 
-let g:molokai_original=0
-colorscheme distinguished
+colorscheme onedark
+hi def link jsObjectKey Label
 " make 'var' keyword easier to spot
 hi link javascriptType Keyword
 " default ColorColumn is too distractive
@@ -154,7 +178,16 @@ hi clear LineNr
 hi link LineNr Comment
 hi link OverLength Error
 
+hi TabLine      ctermfg=White  ctermbg=Black     cterm=NONE
+hi TabLineFill  ctermfg=White  ctermbg=Black     cterm=NONE
+hi TabLineSel   ctermfg=White  ctermbg=DarkBlue  cterm=NONE
+
+
 " --- UI settings ---
+
+
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'onedark'
 
 
 if has('gui_running')
@@ -211,7 +244,18 @@ set wildchar=<TAB>          "   show possible completions.
 set wildmode=list:longest
 set wildignore+=*.DS_STORE,*.db,node_modules/**,*.jpg,*.png,*.gif
 
+" --- winresizer ---
+" start window resize mode by `Ctrl+w e`
+let g:winresizer_start_key = '<C-w>e'
 
+" cancel and quit window resize mode by `z` (keycode 122)
+let g:winresizer_keycode_cancel = 122
+
+" --- smooth scroll ---
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 " --- diff ---
 set diffopt=filler          " Add vertical spaces to keep right
                             "   and left aligned.
@@ -219,7 +263,7 @@ set diffopt+=iwhite         " Ignore whitespace changes.
 
 
 " --- folding---
-set foldmethod=manual       " manual fold
+set foldmethod=syntax       " syntax fold
 set foldnestmax=3           " deepest fold is 3 levels
 set nofoldenable            " don't fold by default
 
@@ -277,7 +321,7 @@ let NERDTreeHighlightCursorline=1   "Highlight the selected entry in the tree
 let NERDTreeShowLineNumbers=0
 let NERDTreeMinimalUI=1
 noremap <leader>nt :NERDTreeToggle<CR>
-noremap <leader>nf :NERDTreeFocus<CR>
+noremap <leader>nf :NERDTreeFind<CR>
 
 
 " --- NERDCommenter ---
@@ -309,14 +353,18 @@ set complete=.,w,b,u,U,t,i,d
 
 " --- snipmate ---
 let g:snips_author = 'Miller Medeiros'
-
+inoremap <C-J> <esc>a<Plug>snipMateNextOrTrigger
+snoremap <C-J> <Plug>snipMateNextOrTrigger
 
 " --- EasyMotion ---
 let g:EasyMotion_leader_key = '<Leader>m'
 " lets make <leader>F and <leader>f use easymotion by default
 let g:EasyMotion_mapping_f = '<leader>f'
 let g:EasyMotion_mapping_F = '<leader>F'
-
+map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>h <Plug>(easymotion-linebackward)
 
 " --- Surround ---
 nnoremap <leader>' :execute "normal \<Plug>Ysurroundiw'"<CR>
@@ -338,16 +386,12 @@ noremap <leader>ss :call StripWhitespace()<CR>
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_root_markers = ['.ctrlp']
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
-set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+"set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
 
-let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(exe|so|dll)$',
-  \ 'link': 'some_bad_symbolic_links',
-  \ }
+let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$'
 let g:ctrlp_user_command = 'find %s -type f'
 
 noremap <leader><C-p> :CtrlP<CR>
@@ -468,6 +512,13 @@ function! KeywordsBasic()
     setl iskeyword=@,48-57,192-255
 endfunc
 
+" --- emmet JSX expander ---
+  let g:user_emmet_leader_key='<Tab>'
+  let g:user_emmet_settings = {
+      \  'javascript.jsx' : {
+    \      'extends' : 'jsx',
+    \  },
+  \}
 
 " --- visual block move ---
 " http://www.youtube.com/watch?v=aHm36-na4-4#t=35m10
@@ -486,7 +537,18 @@ vmap  <expr>  D        DVB_Duplicate()
 nmap <leader>ls :call ListTrans_toggle_format()<CR>
 vmap <leader>ls :call ListTrans_toggle_format('visual')<CR>
 
+" --- test ---
+nmap <silent> t<C-n> :TestNearest<CR>
+nmap <silent> t<C-f> :TestFile<CR>
+nmap <silent> t<C-s> :TestSuite<CR>
+nmap <silent> t<C-l> :TestLast<CR>
+nmap <silent> t<C-g> :TestVisit<CR>
+let test#strategy = "dispatch"
 
+
+" --- expand region ---"
+map K <Plug>(expand_region_expand)
+map J <Plug>(expand_region_shrink)
 
 " -----------------------------------------------------------------------------
 " KEY MAPPINGS
