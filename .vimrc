@@ -13,7 +13,7 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlp/ctrlp.vim'
 Plugin 'vim-scripts/IndentAnything'
 Plugin 'vim-scripts/IndexedSearch'
 Plugin 'vim-scripts/LustyJuggler'
@@ -36,6 +36,7 @@ Plugin 'Lokaltog/vim-easymotion'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-fugitive'
+Plugin 'junegunn/gv.vim'
 Plugin 'gregsexton/gitv'
 Plugin 'christoomey/vim-conflicted'
 Plugin 'tpope/vim-markdown'
@@ -49,7 +50,7 @@ Plugin 'vim-scripts/SyntaxRange'
 Plugin 'janko-m/vim-test'
 Plugin 'tpope/vim-dispatch'
 Plugin 'ludovicchabant/vim-gutentags'
-Plugin 'terryma/vim-smooth-scroll'
+Plugin 'yuttie/comfortable-motion.vim'
 Plugin 'mkitt/tabline.vim'
 Plugin 'simeji/winresizer'
 Plugin 'othree/eregex.vim'
@@ -57,6 +58,9 @@ Plugin 'dkprice/vim-easygrep'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'terryma/vim-expand-region'
 Plugin 'maxbrunsfeld/vim-yankstack'
+Plugin 'mhinz/vim-startify'
+Plugin 'ryanoasis/vim-devicons'
+Plugin 'lygaret/autohighlight.vim'
 
 " css
 Plugin 'ap/vim-css-color'
@@ -73,12 +77,13 @@ Plugin 'moll/vim-node'
 Plugin 'mattn/emmet-vim'
 Plugin 'isRuslan/vim-es6'
 
-" snipmate
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
+" ultisnips 
+Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
+Plugin 'epilande/vim-es2015-snippets'
+Plugin 'epilande/vim-react-snippets'
 
+" statline
 Plugin 'millermedeiros/vim-statline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-airline/vim-airline'
@@ -106,7 +111,7 @@ let mapleader=","
 let maplocalleader=";"
 
 set spelllang=en_us         " spell checking
-set encoding=utf-8 nobomb   " BOM often causes trouble, UTF-8 is awsum.
+set encoding=utf-8          " BOM often causes trouble, UTF-8 is awsum.
 
 
 " --- performance / buffer ---
@@ -308,6 +313,12 @@ set nomodeline                  " don't use modeline (security)
 set pastetoggle=<leader>p       " paste mode: avoid auto indent, treat chars
                                 "   as literal.
 
+" -----------------------------------------------------------------------------
+" PASTE BETWEEN SESSIONS
+" -----------------------------------------------------------------------------
+vnoremap <leader>y :w! /tmp/vitmp<CR>                                                                   
+nnoremap <leader>p :r! cat /tmp/vitmp<CR>
+
 
 
 " -----------------------------------------------------------------------------
@@ -351,10 +362,15 @@ set completefunc=syntaxcomplete#Complete
 set complete=.,w,b,u,U,t,i,d
 " see [autocommands] at the end for more autocomplete settings
 
-" --- snipmate ---
-let g:snips_author = 'Miller Medeiros'
-inoremap <C-J> <esc>a<Plug>snipMateNextOrTrigger
-snoremap <C-J> <Plug>snipMateNextOrTrigger
+" --- ultisnips ---
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-J>"
+let g:UltiSnipsJumpBackwardTrigger="<c-K>"
+
+"--- auto highlight ---
+set updatetime=500 " only be idle on a word for 1/2 second"
+let g:AutoHighlight_ClearOnCursorMoved = 1
+let g:AutoHighlight_ClearOnWindowExit = 1
 
 " --- EasyMotion ---
 let g:EasyMotion_leader_key = '<Leader>m'
