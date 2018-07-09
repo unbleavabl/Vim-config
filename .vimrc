@@ -54,21 +54,23 @@ Plugin 'yuttie/comfortable-motion.vim'
 Plugin 'mkitt/tabline.vim'
 Plugin 'simeji/winresizer'
 Plugin 'othree/eregex.vim'
-Plugin 'dkprice/vim-easygrep'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'terryma/vim-expand-region'
 Plugin 'maxbrunsfeld/vim-yankstack'
 Plugin 'mhinz/vim-startify'
 Plugin 'ryanoasis/vim-devicons'
-Plugin 'lygaret/autohighlight.vim'
 
 " css
 Plugin 'ap/vim-css-color'
 Plugin 'hail2u/vim-css3-syntax'
 
+" haskell
+Plugin 'neovimhaskell/haskell-vim'
+
 " js
 Plugin 'pangloss/vim-javascript'
 Plugin 'jelera/vim-javascript-syntax'
+Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'elzr/vim-json'
 Plugin 'mxw/vim-jsx'
 Plugin 'millermedeiros/vim-esformatter'
@@ -91,7 +93,11 @@ Plugin 'vim-airline/vim-airline'
 " colorschemes
 Plugin 'JonathanReeve/vim-colorschemes'
 Plugin 'felixhummel/setcolors.vim'
+Plugin 'rakr/vim-one'
 Plugin 'joshdick/onedark.vim'
+Plugin 'agude/vim-eldar'
+Plugin 'jdkanani/vim-material-theme'
+Plugin 'kaicataldo/material.vim'
 
 " required for vundle
 call vundle#end()
@@ -172,6 +178,7 @@ endif
 set termguicolors                " 256 colors terminal
 
 colorscheme onedark
+
 hi def link jsObjectKey Label
 " make 'var' keyword easier to spot
 hi link javascriptType Keyword
@@ -367,11 +374,6 @@ let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-J>"
 let g:UltiSnipsJumpBackwardTrigger="<c-K>"
 
-"--- auto highlight ---
-set updatetime=500 " only be idle on a word for 1/2 second"
-let g:AutoHighlight_ClearOnCursorMoved = 1
-let g:AutoHighlight_ClearOnWindowExit = 1
-
 " --- EasyMotion ---
 let g:EasyMotion_leader_key = '<Leader>m'
 " lets make <leader>F and <leader>f use easymotion by default
@@ -466,6 +468,15 @@ function! <SID>SynStack()
   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
 
+" haskell-vim
+let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
+let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
+let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
+let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
+let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
+
 " faster wehn opening files with large lines
 set synmaxcol=300
 
@@ -536,6 +547,9 @@ endfunc
     \  },
   \}
 
+"--- jsx syntax ---
+let g:vim_jsx_pretty_colorful_config = 1
+
 " --- visual block move ---
 " http://www.youtube.com/watch?v=aHm36-na4-4#t=35m10
 
@@ -579,7 +593,7 @@ map J <Plug>(expand_region_shrink)
 " nnoremap <space> :
 
 " sudo write
-" command! W w !sudo tee % > /dev/null
+ command! W w !sudo tee % > /dev/null
 
 " Swap v and CTRL-V, because Block mode is more useful that Visual mode
 " nnoremap    v   <C-V>
@@ -615,12 +629,12 @@ nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
 " Bubble single lines, similar to Eclipse (requires unimpaired.vim)
-nmap <C-Up> [e
-nmap <C-Down> ]e
+nmap <C-S-k> [e
+nmap <C-S-j> ]e
 
 " Bubble multiple lines, similar to Eclipse (requires unimpaired.vim)
-vmap <C-Up> [egv
-vmap <C-Down> ]egv
+vmap <C-S-k> [egv
+vmap <C-S-j> ]egv
 
 " Duplicate lines, similar to Eclipse
 noremap <C-S-Up> YP
@@ -707,11 +721,6 @@ map <leader>bp :BB<CR>
 " resize splits (http://vim.wikia.com/wiki/Resize_splits_more_quickly)
 nnoremap <silent> <Leader>+ :exe "resize " . (winheight(0) * 3/2)<CR>
 nnoremap <silent> <Leader>- :exe "resize " . (winheight(0) * 2/3)<CR>
-
-
-" add spaces inside current parenthesis
-map <leader>( vi(xi  P
-
 
 
 " -----------------------------------------------------------------------------
